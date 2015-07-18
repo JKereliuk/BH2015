@@ -29,12 +29,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
         <Button
             android:id="@+id/searchButton"
             android:text="@string/search"
+            android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+            
+         <ImageView
+             android:id="@+id/spin"
+             android:src="@drawable/spin"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:visibility="invisible"/>
 
+        </FrameLayout>
     </LinearLayout>
 
 </RelativeLayout>

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,6 +24,8 @@ public class MainActivity extends ActionBarActivity {
     private TextView mainText;
 
     private ImageView brainTreeLogo;
+
+    private ImageView spin;
 
     private Context context;
 
@@ -46,6 +50,7 @@ public class MainActivity extends ActionBarActivity {
         searchButton  = (Button) findViewById(R.id.searchButton);
         mainText      = (TextView) findViewById(R.id.mainText);
         brainTreeLogo = (ImageView) findViewById(R.id.brainTree);
+        spin          = (ImageView) findViewById(R.id.spin);
 
         searchButton.setOnClickListener(new View.OnClickListener()
         {
@@ -59,6 +64,11 @@ public class MainActivity extends ActionBarActivity {
                     Toast alertSearching = makeText(context, searchingMessage, LENGTH_SHORT);
                     alertSearching.show();
                     searchButton.setVisibility(View.INVISIBLE);
+
+                    Animation rotation = AnimationUtils.loadAnimation(context, R.anim.rotate);
+                    rotation.setRepeatCount(Animation.INFINITE);
+                    spin.startAnimation(rotation);
+                    spin.setVisibility(View.VISIBLE);
                 }
                 else
                 {
