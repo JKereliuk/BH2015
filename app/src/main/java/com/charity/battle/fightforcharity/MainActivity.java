@@ -36,10 +36,11 @@ public class MainActivity extends ActionBarActivity {
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // Add the name and address to an array adapter to show in a ListView
+                System.out.println(device.getName());
                 devicesAdapter.add(device.getName() + "\n" + device.getAddress());
             }
         }
-    };;
+    };
 
     private Button searchButton;
 
@@ -102,6 +103,13 @@ public class MainActivity extends ActionBarActivity {
         });
     }
 
+    /**
+     * Set up the bluetooth for the device.
+     *  - Check if bluetooth is supported
+     *  - Enable bluetooth if it is not
+     *  - Read any already paired devices
+     *  - Register the BroadcastReceiver
+     */
     public void setBluetooth()
     {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
