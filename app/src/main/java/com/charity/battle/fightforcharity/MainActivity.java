@@ -19,25 +19,31 @@ public class MainActivity extends ActionBarActivity {
     private Button searchButton;
     private TextView mainText;
     private ImageView brainTreeLogo;
+    private ImageView settingsGearImg
 
+    UserManager usermanager;
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // set layout
         setContentView(R.layout.activity_main);
 
         // set view variables
-        searchButton  = (Button) findViewById(R.id.searchButton);
-        mainText      = (TextView) findViewById(R.id.mainText);
+        searchButton = (Button) findViewById(R.id.searchButton);
+        mainText = (TextView) findViewById(R.id.mainText);
         brainTreeLogo = (ImageView) findViewById(R.id.brainTree);
+        settingsGearImg = (ImageView) findViewById(R.id.settingsGear)
 
-        searchButton.setOnClickListener(new View.OnClickListener()
-        {
+        usermanager = new UserManager(getApplicationContext());
+
+        usermanager.checkLogin();
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
+
+
                 Context context = getApplicationContext();
                 CharSequence text = "Searching for a nearby battle!";
                 int duration = LENGTH_SHORT;
@@ -45,10 +51,10 @@ public class MainActivity extends ActionBarActivity {
                 Toast toast = makeText(context, text, duration);
                 toast.show();
 
+
+
             }
         });
-
-
 
     }
 
