@@ -1,5 +1,6 @@
 package com.charity.battle.fightforcharity;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ public class MainActivity extends ActionBarActivity {
 
     private Context context;
 
+    private BluetoothAdapter bluetoothAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -32,6 +35,13 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
 
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter == null) {
+            CharSequence noBluetoothMessage = "The device doesn not support bluetooth. Sorry!";
+            Toast alertNoBluetooth = makeText(context, noBluetoothMessage, LENGTH_SHORT);
+            alertNoBluetooth.show();
+        }
+
         // set view variables
         searchButton  = (Button) findViewById(R.id.searchButton);
         mainText      = (TextView) findViewById(R.id.mainText);
@@ -39,16 +49,23 @@ public class MainActivity extends ActionBarActivity {
 
         searchButton.setOnClickListener(new View.OnClickListener()
         {
-
             @Override
             public void onClick(View v)
             {
-                // Make a toast alert
-                CharSequence text = "Searching for a nearby battle!";
-                Toast toast = makeText(context, text, LENGTH_SHORT);
-                toast.show();
-                searchButton.setVisibility(View.INVISIBLE);
-
+                if(bluetoothAdapter != null)
+                {
+                    // Make a toast alert
+                    CharSequence searchingMessage = "Searching for a nearby battle!";
+                    Toast alertSearching = makeText(context, searchingMessage, LENGTH_SHORT);
+                    alertSearching.show();
+                    searchButton.setVisibility(View.INVISIBLE);
+                }
+                else
+                {
+                    CharSequence cannotSearch = "No bluetooth means you cannot search :(";
+                    Toast alertSearching = makeText(context, cannotSearch, LENGTH_SHORT);
+                    alertSearching.show();
+                }
             }
         });
 
