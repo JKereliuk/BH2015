@@ -88,7 +88,8 @@ public class MainActivity extends ActionBarActivity {
     public void setBluetooth()
     {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (bluetoothAdapter == null) {
+        if (bluetoothAdapter == null)
+        {
             CharSequence noBluetoothMessage = "The device doesn't not support bluetooth. Sorry!";
             Toast alertNoBluetooth = makeText(context, noBluetoothMessage, LENGTH_SHORT);
             alertNoBluetooth.show();
@@ -96,15 +97,18 @@ public class MainActivity extends ActionBarActivity {
         else {
             devicesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
             // enable bluetooth if it is not
-            if (!bluetoothAdapter.isEnabled()) {
+            if (!bluetoothAdapter.isEnabled())
+            {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             }
             Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
             // If there are paired devices
-            if (pairedDevices.size() > 0) {
+            if (pairedDevices.size() > 0)
+            {
                 // Loop through paired devices
-                for (BluetoothDevice device : pairedDevices) {
+                for (BluetoothDevice device : pairedDevices)
+                {
                     // Add the name and address to an array adapter to show in a ListView
                     devicesAdapter.add(device.getName() + "\n" + device.getAddress());
                 }
