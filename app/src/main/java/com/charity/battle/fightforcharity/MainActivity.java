@@ -50,6 +50,8 @@ public class MainActivity extends ActionBarActivity {
 
     private ImageView spin;
 
+    private ImageView xButton;
+
     private Context context;
 
     private BluetoothAdapter bluetoothAdapter;
@@ -72,6 +74,9 @@ public class MainActivity extends ActionBarActivity {
         mainText      = (TextView) findViewById(R.id.mainText);
         brainTreeLogo = (ImageView) findViewById(R.id.brainTree);
         spin          = (ImageView) findViewById(R.id.spin);
+        xButton       = (ImageView) findViewById(R.id.xButton);
+
+        /* onClick listeners */
 
         searchButton.setOnClickListener(new View.OnClickListener()
         {
@@ -91,6 +96,8 @@ public class MainActivity extends ActionBarActivity {
                     spin.startAnimation(rotation);
                     spin.setVisibility(View.VISIBLE);
 
+                    xButton.setVisibility(View.VISIBLE);
+
                     bluetoothAdapter.startDiscovery();
                 }
                 else
@@ -99,6 +106,18 @@ public class MainActivity extends ActionBarActivity {
                     Toast alertSearching = makeText(context, cannotSearch, LENGTH_SHORT);
                     alertSearching.show();
                 }
+            }
+        });
+
+        xButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                spin.clearAnimation();
+                spin.setVisibility(View.INVISIBLE);
+                xButton.setVisibility(View.INVISIBLE);
+                searchButton.setVisibility(View.VISIBLE);
             }
         });
     }
