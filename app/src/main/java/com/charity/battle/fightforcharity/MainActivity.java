@@ -17,8 +17,12 @@ import static android.widget.Toast.*;
 public class MainActivity extends ActionBarActivity {
 
     private Button searchButton;
+
     private TextView mainText;
+
     private ImageView brainTreeLogo;
+
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -26,6 +30,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         // set layout
         setContentView(R.layout.activity_main);
+        context = getApplicationContext();
 
         // set view variables
         searchButton  = (Button) findViewById(R.id.searchButton);
@@ -38,12 +43,11 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v)
             {
-                Context context = getApplicationContext();
+                // Make a toast alert
                 CharSequence text = "Searching for a nearby battle!";
-                int duration = LENGTH_SHORT;
-
-                Toast toast = makeText(context, text, duration);
+                Toast toast = makeText(context, text, LENGTH_SHORT);
                 toast.show();
+                searchButton.setVisibility(View.INVISIBLE);
 
             }
         });
