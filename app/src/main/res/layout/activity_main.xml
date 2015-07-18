@@ -24,11 +24,22 @@
             android:src="@drawable/xbutton"
             android:visibility="invisible"/>
 
-        <ImageView
-            android:id="@+id/brainTree"
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/braintree"/>
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/brainTree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/braintree"/>
+
+            <ListView
+                android:id="@+id/deviceList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </FrameLayout>
+
 
         <TextView
             android:id="@+id/mainText"
@@ -56,6 +67,7 @@
              android:visibility="invisible"/>
 
         </FrameLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

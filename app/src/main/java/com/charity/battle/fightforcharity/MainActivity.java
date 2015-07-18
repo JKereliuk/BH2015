@@ -16,6 +16,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +53,8 @@ public class MainActivity extends ActionBarActivity {
 
     private ImageView xButton;
 
+    private ListView deviceList;
+
     private Context context;
 
     private BluetoothAdapter bluetoothAdapter;
@@ -70,11 +73,12 @@ public class MainActivity extends ActionBarActivity {
         setBluetooth();
 
         // set view variables
-        searchButton  = (Button) findViewById(R.id.searchButton);
-        mainText      = (TextView) findViewById(R.id.mainText);
+        searchButton  = (Button)    findViewById(R.id.searchButton);
+        mainText      = (TextView)  findViewById(R.id.mainText);
         brainTreeLogo = (ImageView) findViewById(R.id.brainTree);
         spin          = (ImageView) findViewById(R.id.spin);
         xButton       = (ImageView) findViewById(R.id.xButton);
+        deviceList    = (ListView)  findViewById(R.id.deviceList);
 
         /* onClick listeners */
 
