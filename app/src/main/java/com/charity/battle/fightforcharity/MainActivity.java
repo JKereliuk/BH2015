@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +39,9 @@ public class MainActivity extends ActionBarActivity {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // Add the name and address to an array adapter to show in a ListView
                 System.out.println(device.getName());
+
                 devicesAdapter.add(device.getName() + "\n" + device.getAddress());
+                deviceSpinner.setAdapter(devicesAdapter);
             }
         }
     };
@@ -53,7 +56,7 @@ public class MainActivity extends ActionBarActivity {
 
     private ImageView xButton;
 
-    private ListView deviceList;
+    private Spinner deviceSpinner;
 
     private Context context;
 
@@ -78,7 +81,7 @@ public class MainActivity extends ActionBarActivity {
         brainTreeLogo = (ImageView) findViewById(R.id.brainTree);
         spin          = (ImageView) findViewById(R.id.spin);
         xButton       = (ImageView) findViewById(R.id.xButton);
-        deviceList    = (ListView)  findViewById(R.id.deviceList);
+        deviceSpinner = (Spinner)  findViewById(R.id.deviceSpinner);
 
         /* onClick listeners */
 
@@ -103,6 +106,7 @@ public class MainActivity extends ActionBarActivity {
                     xButton.setVisibility(View.VISIBLE);
 
                     bluetoothAdapter.startDiscovery();
+                    updateBluetoothDevices(devicesAdapter);
                 }
                 else
                 {
@@ -122,8 +126,30 @@ public class MainActivity extends ActionBarActivity {
                 spin.setVisibility(View.INVISIBLE);
                 xButton.setVisibility(View.INVISIBLE);
                 searchButton.setVisibility(View.VISIBLE);
+                updateBluetoothDevices(devicesAdapter);
             }
         });
+    }
+
+    /**
+     * Updates the list of available bluetooth devices
+     */
+    public void updateBluetoothDevices(ArrayAdapter arrayAdapter)
+    {
+        if(arrayAdapter != null) {
+            arrayAdapter.clear();
+            Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+            // If there are paired devices
+            if (pairedDevices.size() > 0) {
+                // Loop through paired devices
+                for (BluetoothDevice device : pairedDevices) {
+                    System.out.println(device.getName());
+                    // Add the name and address to an array adapter to show in a ListView
+                    devicesAdapter.add(device.getName() + "\n" + device.getAddress());
+                }
+            }
+            deviceSpinner.setAdapter(devicesAdapter);
+        }
     }
 
     /**
@@ -150,6 +176,7 @@ public class MainActivity extends ActionBarActivity {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             }
+            devicesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
             Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
             // If there are paired devices
             if (pairedDevices.size() > 0)

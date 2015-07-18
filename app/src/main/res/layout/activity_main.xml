@@ -34,8 +34,8 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/braintree"/>
 
-            <ListView
-                android:id="@+id/deviceList"
+            <Spinner
+                android:id="@+id/deviceSpinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </FrameLayout>
