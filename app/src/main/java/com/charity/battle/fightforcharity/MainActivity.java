@@ -37,7 +37,7 @@ public class MainActivity extends ActionBarActivity {
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null) {
-            CharSequence noBluetoothMessage = "The device doesn not support bluetooth. Sorry!";
+            CharSequence noBluetoothMessage = "The device doesn't not support bluetooth. Sorry!";
             Toast alertNoBluetooth = makeText(context, noBluetoothMessage, LENGTH_SHORT);
             alertNoBluetooth.show();
         }
