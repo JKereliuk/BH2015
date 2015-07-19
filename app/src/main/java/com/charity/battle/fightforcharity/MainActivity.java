@@ -2,28 +2,34 @@ package com.charity.battle.fightforcharity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.Set;
 
-import static android.widget.Toast.*;
+import static android.widget.Toast.LENGTH_SHORT;
+import static android.widget.Toast.makeText;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -62,8 +68,44 @@ public class MainActivity extends ActionBarActivity {
 
     private BluetoothAdapter bluetoothAdapter;
 
-    ArrayAdapter<String> devicesAdapter;
+    private ArrayAdapter<String> devicesAdapter;
 
+    private boolean connected = false;
+
+    private BluetoothSocket sock;
+
+    private InputStream in;
+
+
+    public void connectToDevice(String macAddress) throws Exception {
+        if (connected) {
+            return;
+        }
+        BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().
+                getRemoteDevice(macAddress);
+        Method m = device.getClass().getMethod("createRfcommSocket",
+                new Class[] { int.class });
+        sock = (BluetoothSocket) m.invoke(device, Integer.valueOf(1));
+        sock.connect();
+        in = sock.getInputStream();
+        byte[] buffer = new byte[50];
+        int read = 0;
+        try {
+            while (true) {
+                read = in.read(buffer);
+                connected = true;
+                StringBuilder buf = new StringBuilder();
+                for (int i = 0; i < read; i++) {
+                    int b = buffer[i] & 0xff;
+                    if (b < 0x10) {
+                        buf.append("0");
+                    }
+                    buf.append(Integer.toHexString(b)).append(" ");
+                }
+                Log.d("ZeeTest", "++++ Read "+ read +" bytes: "+ buf.toString());
+            }
+        } catch (IOException e) {}
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -81,7 +123,7 @@ public class MainActivity extends ActionBarActivity {
         brainTreeLogo = (ImageView) findViewById(R.id.brainTree);
         spin          = (ImageView) findViewById(R.id.spin);
         xButton       = (ImageView) findViewById(R.id.xButton);
-        deviceSpinner = (Spinner)  findViewById(R.id.deviceSpinner);
+        deviceSpinner = (Spinner)   findViewById(R.id.deviceSpinner);
 
         /* onClick listeners */
 
@@ -126,8 +168,32 @@ public class MainActivity extends ActionBarActivity {
                 spin.setVisibility(View.INVISIBLE);
                 xButton.setVisibility(View.INVISIBLE);
                 searchButton.setVisibility(View.VISIBLE);
-                updateBluetoothDevices(devicesAdapter);
             }
+        });
+
+        deviceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
+            {
+                String macAddress = deviceSpinner.getSelectedItem().toString().split("\n")[1];
+                try
+                {
+                    connectToDevice(macAddress);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView)
+            {
+                // your code here
+            }
+
         });
     }
 
