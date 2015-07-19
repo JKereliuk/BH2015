@@ -136,7 +136,12 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v)
             {
-//                connectedThread.write("HEY!".getBytes());
+                System.out.println("yes");
+                if(connectedThread != null) {
+                    System.out.println("cool");
+                    connectedThread.write("HEY!".getBytes());
+                }
+
             }
         });
 
