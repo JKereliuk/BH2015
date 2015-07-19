@@ -50,9 +50,6 @@ public class RockPaperAxe {
         }
 
         public Move getMove() {
-            // Prompt the user
-            System.out.print("Rock, paper, or axe? ");
-
             // Get the user input
             String userInput = inputScanner.nextLine();
             userInput = userInput.toUpperCase();

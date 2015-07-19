@@ -13,6 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Random;
+import java.util.Scanner;
+
 import static android.widget.Toast.LENGTH_SHORT;
 import static android.widget.Toast.makeText;
 
@@ -22,7 +25,13 @@ public class GameActivity extends ActionBarActivity {
     private ImageView rock;
     private ImageView paper;
     private ImageView axe;
+    private TextView playAgain;
+    private Button accept;
+    private Button decline;
     private Context context;
+    private int move;
+    private int result;
+    private int otherMove; //this will be the response from the other user
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +43,18 @@ public class GameActivity extends ActionBarActivity {
         rock = (ImageView) findViewById(R.id.rock);
         paper = (ImageView) findViewById(R.id.paper);
         axe = (ImageView) findViewById(R.id.Axe);
+        playAgain = (TextView) findViewById(R.id.play_again);
+        accept = (Button) findViewById(R.id.accept);
+        decline = (Button) findViewById(R.id.decline);
+        move = 0;
 
         rock.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-
+                move = 1;
+                result = rockPaperAxe(move, otherMove);
             }
         });
         paper.setOnClickListener(new View.OnClickListener()
@@ -48,7 +62,8 @@ public class GameActivity extends ActionBarActivity {
             @Override
             public void onClick(View v)
             {
-
+                move = 2;
+                result = rockPaperAxe(move, otherMove);
             }
         });
         axe.setOnClickListener(new View.OnClickListener()
@@ -56,9 +71,26 @@ public class GameActivity extends ActionBarActivity {
             @Override
             public void onClick(View v)
             {
-
+                move = 3;
+                result = rockPaperAxe(move, otherMove);
             }
         });
+    }
+
+
+    public int rockPaperAxe(int move, int otherMove) {
+        if (move == otherMove) { return 0;}
+        switch (move) {
+            case 1:
+                return (otherMove == 3 ? 1 : -1);
+            case 2:
+                return (otherMove == 1 ? 1 : -1);
+            case 3:
+                return (otherMove == 2 ? 1 : -1);
+        }
+
+        //should never get here
+        return 0;
     }
 
     @Override

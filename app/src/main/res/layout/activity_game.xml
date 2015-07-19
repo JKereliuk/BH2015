@@ -34,6 +34,30 @@
             android:layout_height="wrap_content"
             android:src="@drawable/Axe"/>
 
+        <TextView
+            android:id="@+id/play_again"
+            android:text="@string/playa_again"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"/>
+
+        <Button
+            android:id="@+id/accept"
+            android:text="@string/accept"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"/>
+
+        <Button
+            android:id="@+id/decline"
+            android:text="@string/decline"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"/>
+
     </LinearLayout>
 
 </RelativeLayout>
