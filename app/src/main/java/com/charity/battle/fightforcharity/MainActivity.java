@@ -54,6 +54,8 @@ public class MainActivity extends ActionBarActivity {
 
     private Button searchButton;
 
+    private Button connectButton;
+
     private TextView mainText;
 
     private ImageView brainTreeLogo;
@@ -76,37 +78,6 @@ public class MainActivity extends ActionBarActivity {
 
     private InputStream in;
 
-
-    public void connectToDevice(String macAddress) throws Exception {
-        if (connected) {
-            return;
-        }
-        BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().
-                getRemoteDevice(macAddress);
-        Method m = device.getClass().getMethod("createRfcommSocket",
-                new Class[] { int.class });
-        sock = (BluetoothSocket) m.invoke(device, Integer.valueOf(1));
-        sock.connect();
-        in = sock.getInputStream();
-        byte[] buffer = new byte[50];
-        int read = 0;
-        try {
-            while (true) {
-                read = in.read(buffer);
-                connected = true;
-                StringBuilder buf = new StringBuilder();
-                for (int i = 0; i < read; i++) {
-                    int b = buffer[i] & 0xff;
-                    if (b < 0x10) {
-                        buf.append("0");
-                    }
-                    buf.append(Integer.toHexString(b)).append(" ");
-                }
-                Log.d("ZeeTest", "++++ Read "+ read +" bytes: "+ buf.toString());
-            }
-        } catch (IOException e) {}
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -119,6 +90,7 @@ public class MainActivity extends ActionBarActivity {
 
         // set view variables
         searchButton  = (Button)    findViewById(R.id.searchButton);
+        connectButton = (Button)    findViewById(R.id.connectButton);
         mainText      = (TextView)  findViewById(R.id.mainText);
         brainTreeLogo = (ImageView) findViewById(R.id.brainTree);
         spin          = (ImageView) findViewById(R.id.spin);
@@ -171,10 +143,10 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        deviceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        connectButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
+            public void onClick(View v)
             {
                 String macAddress = deviceSpinner.getSelectedItem().toString().split("\n")[1];
                 try
@@ -185,16 +157,52 @@ public class MainActivity extends ActionBarActivity {
                 {
                     e.printStackTrace();
                 }
+            }
+        });
 
+        deviceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
+            {
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView)
             {
-                // your code here
             }
 
         });
+    }
+
+    public void connectToDevice(String macAddress) throws Exception {
+        if (connected) {
+            return;
+        }
+        BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().
+                getRemoteDevice(macAddress);
+        Method m = device.getClass().getMethod("createRfcommSocket",
+                new Class[] { int.class });
+        sock = (BluetoothSocket) m.invoke(device, Integer.valueOf(1));
+        sock.connect();
+        in = sock.getInputStream();
+        byte[] buffer = new byte[50];
+        int read = 0;
+        try {
+            while (true) {
+                read = in.read(buffer);
+                connected = true;
+                StringBuilder buf = new StringBuilder();
+                for (int i = 0; i < read; i++) {
+                    int b = buffer[i] & 0xff;
+                    if (b < 0x10) {
+                        buf.append("0");
+                    }
+                    buf.append(Integer.toHexString(b)).append(" ");
+                }
+                Log.d("ZeeTest", "++++ Read "+ read +" bytes: "+ buf.toString());
+            }
+        } catch (IOException e) {}
     }
 
     /**
