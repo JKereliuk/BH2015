@@ -94,6 +94,10 @@ public class MainActivity extends ActionBarActivity {
 
     private InputStream in;
 
+    private ConnectedThread hostThread;
+
+    private ConnectedThread connectedThread;
+
     private final Handler handler = new Handler() {
 
         @Override
@@ -124,6 +128,15 @@ public class MainActivity extends ActionBarActivity {
         deviceSpinner = (Spinner) findViewById(R.id.deviceSpinner);
 
         /* onClick listeners */
+
+        //IGNORE THIS ONE FOR NOW
+        brainTreeLogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                connectedThread.write("HEY!".getBytes());
+            }
+        });
 
         hostButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -342,7 +355,8 @@ public class MainActivity extends ActionBarActivity {
                 // If a connection was accepted
                 if (socket != null) {
                     // Do work to manage the connection (in a separate thread)
-//                    manageConnectedSocket(socket);
+                    hostThread = new ConnectedThread(socket);
+                    hostThread.start();
                     try {
                         mmServerSocket.close();
                     } catch (IOException e) {
@@ -400,9 +414,8 @@ public class MainActivity extends ActionBarActivity {
 
             // Do work to manage the connection (in a separate thread)
 //            manageConnectedSocket(mmSocket);
-            ConnectedThread connectedThread = new ConnectedThread(mmSocket);
+            connectedThread = new ConnectedThread(mmSocket);
             connectedThread.start();
-            connectedThread.write("hi".getBytes());
         }
 
         /** Will cancel an in-progress connection, and close the socket */
