@@ -1,8 +1,10 @@
 package com.charity.battle.fightforcharity;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,7 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import static android.widget.Toast.*;
+import static android.widget.Toast.LENGTH_SHORT;
+import static android.widget.Toast.makeText;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -19,7 +22,6 @@ public class MainActivity extends ActionBarActivity {
     private Button searchButton;
     private TextView mainText;
     private ImageView brainTreeLogo;
-    private ImageView settingsGearImg
 
     UserManager usermanager;
     @Override
@@ -32,7 +34,6 @@ public class MainActivity extends ActionBarActivity {
         searchButton = (Button) findViewById(R.id.searchButton);
         mainText = (TextView) findViewById(R.id.mainText);
         brainTreeLogo = (ImageView) findViewById(R.id.brainTree);
-        settingsGearImg = (ImageView) findViewById(R.id.settingsGear)
 
         usermanager = new UserManager(getApplicationContext());
 
@@ -75,7 +76,12 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            FragmentManager mFragmentManager = getFragmentManager();
+            FragmentTransaction mFragmentTransaction = mFragmentManager
+                    .beginTransaction();
+            PrefsFragment mPrefsFragment = new PrefsFragment();
+            mFragmentTransaction.replace(android.R.id.content, mPrefsFragment);
+            mFragmentTransaction.commit();
         }
 
         return super.onOptionsItemSelected(item);
