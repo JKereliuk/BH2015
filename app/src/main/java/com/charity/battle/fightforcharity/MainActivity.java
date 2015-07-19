@@ -2,13 +2,16 @@ package com.charity.battle.fightforcharity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.Set;
+import java.util.UUID;
 
 import static android.widget.Toast.LENGTH_SHORT;
 import static android.widget.Toast.makeText;
@@ -36,6 +40,10 @@ public class MainActivity extends ActionBarActivity {
 
     private final int REQUEST_ENABLE_BT = 1;
 
+    private final String NAME = "DonationDuel";
+
+    private UUID MY_UUID = new UUID(1, 1);
+
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -44,21 +52,26 @@ public class MainActivity extends ActionBarActivity {
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // Add the name and address to an array adapter to show in a ListView
-                System.out.println(device.getName());
-
-                devicesAdapter.add(device.getName() + "\n" + device.getAddress());
-                deviceSpinner.setAdapter(devicesAdapter);
+                if(device.getName().endsWith(NAME_SUFFIX))
+                {
+                    devicesAdapter.add(device.getName() + "\n" + device.getAddress());
+                    deviceSpinner.setAdapter(devicesAdapter);
+                }
             }
         }
     };
 
     private Context context;
 
+    private final String NAME_SUFFIX = ":DonationDuel";
+
     /* Views */
 
     private Button searchButton;
 
     private Button connectButton;
+
+    private Button hostButton;
 
     private TextView mainText;
 
@@ -86,6 +99,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         // set layout
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
@@ -95,6 +109,7 @@ public class MainActivity extends ActionBarActivity {
         // set view variables
         searchButton  = (Button)    findViewById(R.id.searchButton);
         connectButton = (Button)    findViewById(R.id.connectButton);
+        hostButton    = (Button)    findViewById(R.id.hostButton);
         mainText      = (TextView)  findViewById(R.id.mainText);
         brainTreeLogo = (ImageView) findViewById(R.id.brainTree);
         spin          = (ImageView) findViewById(R.id.spin);
@@ -102,6 +117,16 @@ public class MainActivity extends ActionBarActivity {
         deviceSpinner = (Spinner)   findViewById(R.id.deviceSpinner);
 
         /* onClick listeners */
+
+        hostButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                AcceptThread acceptThread = new AcceptThread();
+            }
+        });
+
 
         searchButton.setOnClickListener(new View.OnClickListener()
         {
@@ -129,7 +154,7 @@ public class MainActivity extends ActionBarActivity {
 
                     // look for devices
                     bluetoothAdapter.startDiscovery();
-                    updateBluetoothDevices(devicesAdapter);
+//                    updateBluetoothDevices(devicesAdapter);
                 }
                 else
                 {
@@ -158,14 +183,8 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v)
             {
                 String macAddress = deviceSpinner.getSelectedItem().toString().split("\n")[1];
-                try
-                {
-                    connectToDevice(macAddress);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
+                BluetoothDevice host = bluetoothAdapter.getRemoteDevice(macAddress);
+                ConnectThread connectThread = new ConnectThread(host);
             }
         });
     }
@@ -180,7 +199,7 @@ public class MainActivity extends ActionBarActivity {
         if (connected) {
             return;
         }
-        BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().
+        BluetoothDevice device = bluetoothAdapter.
                 getRemoteDevice(macAddress);
         Method m = device.getClass().getMethod("createRfcommSocket",
                 new Class[] { int.class });
@@ -189,21 +208,21 @@ public class MainActivity extends ActionBarActivity {
         in = sock.getInputStream();
         byte[] buffer = new byte[50];
         int read = 0;
-        try {
-            while (true) {
-                read = in.read(buffer);
-                connected = true;
-                StringBuilder buf = new StringBuilder();
-                for (int i = 0; i < read; i++) {
-                    int b = buffer[i] & 0xff;
-                    if (b < 0x10) {
-                        buf.append("0");
-                    }
-                    buf.append(Integer.toHexString(b)).append(" ");
-                }
-                Log.d("ZeeTest", "++++ Read "+ read +" bytes: "+ buf.toString());
-            }
-        } catch (IOException e) {}
+//        try {
+//            while (true) {
+//                read = in.read(buffer);
+//                connected = true;
+//                StringBuilder buf = new StringBuilder();
+//                for (int i = 0; i < read; i++) {
+//                    int b = buffer[i] & 0xff;
+//                    if (b < 0x10) {
+//                        buf.append("0");
+//                    }
+//                    buf.append(Integer.toHexString(b)).append(" ");
+//                }
+//                Log.d("ZeeTest", "++++ Read "+ read +" bytes: "+ buf.toString());
+//            }
+//        } catch (IOException e) {}
     }
 
     /**
@@ -220,7 +239,9 @@ public class MainActivity extends ActionBarActivity {
                 for (BluetoothDevice device : pairedDevices) {
                     System.out.println(device.getName());
                     // Add the name and address to an array adapter to show in a ListView
-                    devicesAdapter.add(device.getName() + "\n" + device.getAddress());
+                    if(device.getName().endsWith(NAME_SUFFIX)) {
+                        devicesAdapter.add(device.getName() + "\n" + device.getAddress());
+                    }
                 }
             }
             deviceSpinner.setAdapter(devicesAdapter);
@@ -237,6 +258,13 @@ public class MainActivity extends ActionBarActivity {
     public void setBluetooth()
     {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        // set the name if it is not already set to identify app use
+        if(!(bluetoothAdapter.getName().endsWith(NAME_SUFFIX)))
+        {
+            bluetoothAdapter.setName(bluetoothAdapter.getName().concat(NAME_SUFFIX));
+        }
+
         if (bluetoothAdapter == null)
         {
             CharSequence noBluetoothMessage = "The device doesn't not support bluetooth. Sorry!";
@@ -260,7 +288,9 @@ public class MainActivity extends ActionBarActivity {
                 for (BluetoothDevice device : pairedDevices)
                 {
                     // Add the name and address to an array adapter to show in a ListView
-                    devicesAdapter.add(device.getName() + "\n" + device.getAddress());
+                    if(device.getName().endsWith(NAME_SUFFIX)) {
+                        devicesAdapter.add(device.getName() + "\n" + device.getAddress());
+                    }
                 }
             }
         }
@@ -290,5 +320,100 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class AcceptThread extends Thread {
+        private final BluetoothServerSocket mmServerSocket;
+
+        public AcceptThread() {
+            // Use a temporary object that is later assigned to mmServerSocket,
+            // because mmServerSocket is final
+            BluetoothServerSocket tmp = null;
+            try {
+                // MY_UUID is the app's UUID string, also used by the client code
+                tmp = bluetoothAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
+            } catch (IOException e) {
+            }
+            mmServerSocket = tmp;
+        }
+
+        public void run() {
+            BluetoothSocket socket = null;
+            // Keep listening until exception occurs or a socket is returned
+            while (true) {
+                try {
+                    socket = mmServerSocket.accept();
+                } catch (IOException e) {
+                    break;
+                }
+                // If a connection was accepted
+                if (socket != null) {
+                    // Do work to manage the connection (in a separate thread)
+//                    manageConnectedSocket(socket);
+                    try {
+                        mmServerSocket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        /**
+         * Will cancel the listening socket, and cause the thread to finish
+         */
+        public void cancel() {
+            try {
+                mmServerSocket.close();
+            } catch (IOException e) {
+            }
+        }
+    }
+    private class ConnectThread extends Thread {
+        private final BluetoothSocket mmSocket;
+        private final BluetoothDevice mmDevice;
+
+        public ConnectThread(BluetoothDevice device) {
+            // Use a temporary object that is later assigned to mmSocket,
+            // because mmSocket is final
+            BluetoothSocket tmp = null;
+            mmDevice = device;
+
+            // Get a BluetoothSocket to connect with the given BluetoothDevice
+            try {
+                // MY_UUID is the app's UUID string, also used by the server code
+                tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
+            } catch (IOException e) { }
+            mmSocket = tmp;
+        }
+
+        public void run() {
+            // Cancel discovery because it will slow down the connection
+            bluetoothAdapter.cancelDiscovery();
+
+            try {
+                // Connect the device through the socket. This will block
+                // until it succeeds or throws an exception
+                mmSocket.connect();
+            } catch (IOException connectException) {
+                // Unable to connect; close the socket and get out
+                try {
+                    mmSocket.close();
+                } catch (IOException closeException) { }
+                return;
+            }
+
+            // Do work to manage the connection (in a separate thread)
+//            manageConnectedSocket(mmSocket);
+        }
+
+        /** Will cancel an in-progress connection, and close the socket */
+        public void cancel() {
+            try {
+                mmSocket.close();
+            } catch (IOException e) { }
+        }
     }
 }

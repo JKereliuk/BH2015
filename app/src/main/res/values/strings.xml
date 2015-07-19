@@ -5,4 +5,5 @@
     <string name="action_settings">Settings</string>
     <string name="search">Search for a battle!</string>
     <string name="connect">Connect</string>
+    <string name="host">Host</string>
 </resources>

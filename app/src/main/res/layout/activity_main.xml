@@ -44,14 +44,27 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-                <Button
-                    android:id="@+id/connectButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/connect"/>
             </LinearLayout>
         </FrameLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/connectButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/connect"/>
+
+            <Button
+                android:id="@+id/hostButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/host"/>
+
+           </LinearLayout>
 
         <TextView
             android:id="@+id/mainText"
