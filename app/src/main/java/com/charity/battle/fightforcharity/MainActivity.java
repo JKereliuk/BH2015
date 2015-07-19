@@ -24,6 +24,8 @@ import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalFuturePaymentActivity;
 import com.paypal.android.sdk.payments.PayPalService;
 
+import org.json.JSONException;
+
 import static android.widget.Toast.LENGTH_SHORT;
 import static android.widget.Toast.makeText;
 
@@ -37,17 +39,20 @@ public class MainActivity extends ActionBarActivity {
     PrefsFragment mPrefsFragment = new PrefsFragment();
     public boolean settings_toggle = true;
 
+    private static final String CONFIG_ENVIRONMENT = PayPalConfiguration.ENVIRONMENT_NO_NETWORK;
+
+    // note that these credentials will differ between live & sandbox environments.
+    private static final String CONFIG_CLIENT_ID = "credential from developer.paypal.com";
+
+
     private static PayPalConfiguration config = new PayPalConfiguration()
-
-            // Start with mock environment.  When ready, switch to sandbox (ENVIRONMENT_SANDBOX)
-            // or live (ENVIRONMENT_PRODUCTION)
-            .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
-
-            .clientId("ARYcSz8eGomVVQ-TPSuqQmM61u_PsHiD8WmQ05jNLfUccTu6fmPHwwhtNF88m0Tt5IQYn47rJrCrCAN2")
-
-            .merchantName("Donation Duel")
+            .environment(CONFIG_ENVIRONMENT)
+            .clientId(CONFIG_CLIENT_ID)
+                    // The following are only used in PayPalFuturePaymentActivity.
+            .merchantName("Example Merchant")
             .merchantPrivacyPolicyUri(Uri.parse("https://www.example.com/privacy"))
             .merchantUserAgreementUri(Uri.parse("https://www.example.com/legal"));
+
 
     private static final int REQUEST_CODE_PAYMENT = 1;
     private static final int REQUEST_CODE_FUTURE_PAYMENT = 2;
@@ -169,16 +174,16 @@ public class MainActivity extends ActionBarActivity {
             PayPalAuthorization auth = data
                     .getParcelableExtra(PayPalFuturePaymentActivity.EXTRA_RESULT_AUTHORIZATION);
             Log.d("TAG PLEASE TAG PLLZZZ", "POOOOOOOOP");
-//            if (auth != null) {
-//                try {
-//                    String authorization_code = auth.getAuthorizationCode();
-//
-//                    sendAuthorizationToServer(auth);
-//
-//                } catch (JSONException e) {
-//                    Log.e("FuturePaymentExample", "an extremely unlikely failure occurred: ", e);
-//                }
-//            }
+            if (auth != null) {
+                try {
+                    String authorization_code = auth.getAuthorizationCode();
+
+                    sendAuthorizationToServer(auth);
+
+                } catch (JSONException e) {
+                    Log.e("FuturePaymentExample", "an extremely unlikely failure occurred: ", e);
+                }
+            }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             Log.i("FuturePaymentExample", "The user canceled.");
         } else if (resultCode == PayPalFuturePaymentActivity.RESULT_EXTRAS_INVALID) {
@@ -186,4 +191,11 @@ public class MainActivity extends ActionBarActivity {
                     "Probably the attempt to previously start the PayPalService had an invalid PayPalConfiguration. Please see the docs.");
         }
     }
+
+    public void sendAuthorizationToServer(PayPalAuthorization auth) throws JSONException {
+
+
+    }
+
+
 }
