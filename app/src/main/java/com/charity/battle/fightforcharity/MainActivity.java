@@ -141,6 +141,11 @@ public class MainActivity extends ActionBarActivity {
                     System.out.println("cool");
                     connectedThread.write("HEY!".getBytes());
                 }
+                if(connectedThread != null && hostThread != null)
+                {
+                    Intent intent = new Intent(GameActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
 
             }
         });
