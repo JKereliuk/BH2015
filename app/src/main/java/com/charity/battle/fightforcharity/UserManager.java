@@ -1,13 +1,11 @@
 package com.charity.battle.fightforcharity;
 
-import java.util.HashMap;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-import com.charity.battle.fightforcharity.LoginActivity;
+import java.util.HashMap;
 
 public class UserManager {
     // Shared Preferences
@@ -79,8 +77,6 @@ public class UserManager {
         }
 
     }
-
-
 
     /**
      * Get stored session data

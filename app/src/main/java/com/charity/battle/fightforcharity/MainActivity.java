@@ -3,8 +3,11 @@ package com.charity.battle.fightforcharity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +25,8 @@ public class MainActivity extends ActionBarActivity {
     private Button searchButton;
     private TextView mainText;
     private ImageView brainTreeLogo;
+    PrefsFragment mPrefsFragment = new PrefsFragment();
+    public boolean settings_toggle = true;
 
     UserManager usermanager;
     @Override
@@ -44,7 +49,6 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
 
-
                 Context context = getApplicationContext();
                 CharSequence text = "Searching for a nearby battle!";
                 int duration = LENGTH_SHORT;
@@ -52,7 +56,7 @@ public class MainActivity extends ActionBarActivity {
                 Toast toast = makeText(context, text, duration);
                 toast.show();
 
-
+                getPref("donation_amount", getApplicationContext());
 
             }
         });
@@ -74,16 +78,40 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             FragmentManager mFragmentManager = getFragmentManager();
-            FragmentTransaction mFragmentTransaction = mFragmentManager
-                    .beginTransaction();
-            PrefsFragment mPrefsFragment = new PrefsFragment();
-            mFragmentTransaction.replace(android.R.id.content, mPrefsFragment);
-            mFragmentTransaction.commit();
+
+            if (settings_toggle) {
+                FragmentTransaction mFragmentTransaction = mFragmentManager
+                        .beginTransaction();
+
+                mFragmentTransaction.replace(android.R.id.content, mPrefsFragment);
+                mFragmentTransaction.commit();
+
+            } else {
+                mFragmentManager.beginTransaction().remove(mPrefsFragment).commit();
+                Log.w("sdf", "toggle");
+            }
+
+            settings_toggle = !settings_toggle;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    public static void putPref(String key, String value, Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+
+    public static String getPref(String key, Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getString(key, null);
+    }
+
+
 }
