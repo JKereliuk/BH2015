@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.paypal.android.sdk.payments.PayPalAuthorization;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalFuturePaymentActivity;
+import com.paypal.android.sdk.payments.PayPalProfileSharingActivity;
 import com.paypal.android.sdk.payments.PayPalService;
 
 import org.json.JSONException;
@@ -32,6 +33,8 @@ import static android.widget.Toast.makeText;
 
 public class MainActivity extends ActionBarActivity {
 
+
+    private static final String TAG = "Payment";
     private Button searchButton;
     private Button paypalButton;
     private TextView mainText;
@@ -76,17 +79,17 @@ public class MainActivity extends ActionBarActivity {
 
         usermanager.checkLogin();
 
-        paypalButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View pressed) {
-                Intent intent = new Intent(MainActivity.this, PayPalFuturePaymentActivity.class);
-
-                // send the same configuration for restart resiliency
-                intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
-
-                startActivityForResult(intent, REQUEST_CODE_FUTURE_PAYMENT);
-            }
-        });
+//        paypalButton.setOnClickListener(new View.OnClickListener() {
+//
+//            public void onClick(View pressed) {
+//                Intent intent = new Intent(MainActivity.this, PayPalFuturePaymentActivity.class);
+//
+//                // send the same configuration for restart resiliency
+//                intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
+//
+//                startActivityForResult(intent, REQUEST_CODE_FUTURE_PAYMENT);
+//            }
+//        });
 
 
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +116,14 @@ public class MainActivity extends ActionBarActivity {
         startService(intent);
     }
 
+    public void onFuturePaymentPressed(View pressed) {
+        Intent intent = new Intent(MainActivity.this, PayPalFuturePaymentActivity.class);
+
+        // send the same configuration for restart resiliency
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
+
+        startActivityForResult(intent, REQUEST_CODE_FUTURE_PAYMENT);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -168,29 +179,125 @@ public class MainActivity extends ActionBarActivity {
         super.onDestroy();
     }
 
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            PayPalAuthorization auth = data
-                    .getParcelableExtra(PayPalFuturePaymentActivity.EXTRA_RESULT_AUTHORIZATION);
-            Log.d("TAG PLEASE TAG PLLZZZ", "POOOOOOOOP");
-            if (auth != null) {
-                try {
-                    String authorization_code = auth.getAuthorizationCode();
+        if (requestCode == REQUEST_CODE_PAYMENT) {
+//            if (resultCode == Activity.RESULT_OK) {
+//                PaymentConfirmation confirm =
+//                        data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+//                if (confirm != null) {
+//                    try {
+//                        Log.i(TAG, confirm.toJSONObject().toString(4));
+//                        Log.i(TAG, confirm.getPayment().toJSONObject().toString(4));
+//                        /**
+//                         *  TODO: send 'confirm' (and possibly confirm.getPayment() to your server for verification
+//                         * or consent completion.
+//                         * See https://developer.paypal.com/webapps/developer/docs/integration/mobile/verify-mobile-payment/
+//                         * for more details.
+//                         *
+//                         * For sample mobile backend interactions, see
+//                         * https://github.com/paypal/rest-api-sdk-python/tree/master/samples/mobile_backend
+//                         */
+//                        Toast.makeText(
+//                                getApplicationContext(),
+//                                "PaymentConfirmation info received from PayPal", Toast.LENGTH_LONG)
+//                                .show();
+//
+//                    } catch (JSONException e) {
+//                        Log.e(TAG, "an extremely unlikely failure occurred: ", e);
+//                    }
+//                }
+//            } else if (resultCode == Activity.RESULT_CANCELED) {
+//                Log.i(TAG, "The user canceled.");
+//            } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
+//                Log.i(
+//                        TAG,
+//                        "An invalid Payment or PayPalConfiguration was submitted. Please see the docs.");
+//            }
+        } else if (requestCode == REQUEST_CODE_FUTURE_PAYMENT) {
+            if (resultCode == Activity.RESULT_OK) {
+                PayPalAuthorization auth =
+                        data.getParcelableExtra(PayPalFuturePaymentActivity.EXTRA_RESULT_AUTHORIZATION);
+                if (auth != null) {
+                    try {
+                        Log.i("FuturePaymentExample", auth.toJSONObject().toString(4));
 
-                    sendAuthorizationToServer(auth);
+                        String authorization_code = auth.getAuthorizationCode();
+                        Log.i("FuturePaymentExample", authorization_code);
 
-                } catch (JSONException e) {
-                    Log.e("FuturePaymentExample", "an extremely unlikely failure occurred: ", e);
+                        sendAuthorizationToServer(auth);
+                        Toast.makeText(
+                                getApplicationContext(),
+                                "Future Payment code received from PayPal", Toast.LENGTH_LONG)
+                                .show();
+
+                    } catch (JSONException e) {
+                        Log.e("FuturePaymentExample", "an extremely unlikely failure occurred: ", e);
+                    }
                 }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.i("FuturePaymentExample", "The user canceled.");
+            } else if (resultCode == PayPalFuturePaymentActivity.RESULT_EXTRAS_INVALID) {
+                Log.i(
+                        "FuturePaymentExample",
+                        "Probably the attempt to previously start the PayPalService had an invalid PayPalConfiguration. Please see the docs.");
             }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            Log.i("FuturePaymentExample", "The user canceled.");
-        } else if (resultCode == PayPalFuturePaymentActivity.RESULT_EXTRAS_INVALID) {
-            Log.i("FuturePaymentExample",
-                    "Probably the attempt to previously start the PayPalService had an invalid PayPalConfiguration. Please see the docs.");
+        } else if (requestCode == REQUEST_CODE_PROFILE_SHARING) {
+            if (resultCode == Activity.RESULT_OK) {
+                PayPalAuthorization auth =
+                        data.getParcelableExtra(PayPalProfileSharingActivity.EXTRA_RESULT_AUTHORIZATION);
+                if (auth != null) {
+                    try {
+                        Log.i("ProfileSharingExample", auth.toJSONObject().toString(4));
+
+                        String authorization_code = auth.getAuthorizationCode();
+                        Log.i("ProfileSharingExample", authorization_code);
+
+                        sendAuthorizationToServer(auth);
+                        Toast.makeText(
+                                getApplicationContext(),
+                                "Profile Sharing code received from PayPal", Toast.LENGTH_LONG)
+                                .show();
+
+                    } catch (JSONException e) {
+                        Log.e("ProfileSharingExample", "an extremely unlikely failure occurred: ", e);
+                    }
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.i("ProfileSharingExample", "The user canceled.");
+            } else if (resultCode == PayPalFuturePaymentActivity.RESULT_EXTRAS_INVALID) {
+                Log.i(
+                        "ProfileSharingExample",
+                        "Probably the attempt to previously start the PayPalService had an invalid PayPalConfiguration. Please see the docs.");
+            }
         }
     }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (resultCode == Activity.RESULT_OK) {
+//            PayPalAuthorization auth = data
+//                    .getParcelableExtra(PayPalFuturePaymentActivity.EXTRA_RESULT_AUTHORIZATION);
+//            Log.d("TAG PLEASE TAG PLLZZZ", "POOOOOOOOP");
+//            if (auth != null) {
+//                try {
+//                    String authorization_code = auth.getAuthorizationCode();
+//
+//                    sendAuthorizationToServer(auth);
+//
+//                } catch (JSONException e) {
+//                    Log.e("FuturePaymentExample", "an extremely unlikely failure occurred: ", e);
+//                }
+//            }
+//        } else if (resultCode == Activity.RESULT_CANCELED) {
+//            Log.i("FuturePaymentExample", "The user canceled.");
+//        } else if (resultCode == PayPalFuturePaymentActivity.RESULT_EXTRAS_INVALID) {
+//            Log.i("FuturePaymentExample",
+//                    "Probably the attempt to previously start the PayPalService had an invalid PayPalConfiguration. Please see the docs.");
+//        }
+//    }
 
     public void sendAuthorizationToServer(PayPalAuthorization auth) throws JSONException {
 

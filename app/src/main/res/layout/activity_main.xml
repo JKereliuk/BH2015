@@ -23,6 +23,7 @@
             android:layout_height="wrap_content"
             android:text="Configure Paypal"
             android:id="@+id/config_paypal"
+            android:onClick="onFuturePaymentPressed"
             android:layout_gravity="center_horizontal" />
 
         <ImageView
