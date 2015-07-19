@@ -1,8 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Fight for Charity</string>
 
+    <string name="app_name">Fight for Charity</string>
     <string name="welcome_message">Welcome to Fight for Charity!</string>
     <string name="action_settings">Settings</string>
     <string name="search">Search for a battle!</string>
     <string name="get_donation_amount"></string>
+    <string name="title_activity_paypal_service">PaypalService</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>
