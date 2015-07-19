@@ -44,15 +44,15 @@ public class GameActivity extends ActionBarActivity {
         context = getApplicationContext();
 
         // set view variables
-        rockImg = (ImageView) findViewById(R.id.rock);
-        paperImg = (ImageView) findViewById(R.id.paper);
-        axeImg = (ImageView) findViewById(R.id.Axe);
-        playAgainView = (TextView) findViewById(R.id.play_again);
-        winView = (TextView) findViewById(R.id.win);
-        tieView = (TextView) findViewById(R.id.tie);
-        loseView = (TextView) findViewById(R.id.lose);
-        acceptButton = (Button) findViewById(R.id.accept);
-        declineButton = (Button) findViewById(R.id.decline);
+        rockImg       = (ImageView) findViewById(R.id.rock);
+        paperImg      = (ImageView) findViewById(R.id.paper);
+        axeImg        = (ImageView) findViewById(R.id.axe);
+        playAgainView = (TextView)  findViewById(R.id.play_again);
+        winView       = (TextView)  findViewById(R.id.win);
+        tieView       = (TextView)  findViewById(R.id.tie);
+        loseView      = (TextView)  findViewById(R.id.lose);
+        acceptButton  = (Button)    findViewById(R.id.accept);
+        declineButton = (Button)    findViewById(R.id.decline);
         move = 0;
         otherMove = 1; // for testing
 
