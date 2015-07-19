@@ -8,17 +8,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -52,8 +48,8 @@ public class MainActivity extends ActionBarActivity {
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // Add the name and address to an array adapter to show in a ListView
-                if(device.getName().endsWith(NAME_SUFFIX))
-                {
+                System.out.println(device.getName());
+                if (device.getName().endsWith(NAME_SUFFIX)) {
                     devicesAdapter.add(device.getName() + "\n" + device.getAddress());
                     deviceSpinner.setAdapter(devicesAdapter);
                 }
@@ -96,8 +92,7 @@ public class MainActivity extends ActionBarActivity {
     private InputStream in;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // set layout
@@ -107,34 +102,31 @@ public class MainActivity extends ActionBarActivity {
         setBluetooth();
 
         // set view variables
-        searchButton  = (Button)    findViewById(R.id.searchButton);
-        connectButton = (Button)    findViewById(R.id.connectButton);
-        hostButton    = (Button)    findViewById(R.id.hostButton);
-        mainText      = (TextView)  findViewById(R.id.mainText);
+        searchButton = (Button) findViewById(R.id.searchButton);
+        connectButton = (Button) findViewById(R.id.connectButton);
+        hostButton = (Button) findViewById(R.id.hostButton);
+        mainText = (TextView) findViewById(R.id.mainText);
         brainTreeLogo = (ImageView) findViewById(R.id.brainTree);
-        spin          = (ImageView) findViewById(R.id.spin);
-        xButton       = (ImageView) findViewById(R.id.xButton);
-        deviceSpinner = (Spinner)   findViewById(R.id.deviceSpinner);
+        spin = (ImageView) findViewById(R.id.spin);
+        xButton = (ImageView) findViewById(R.id.xButton);
+        deviceSpinner = (Spinner) findViewById(R.id.deviceSpinner);
 
         /* onClick listeners */
 
-        hostButton.setOnClickListener(new View.OnClickListener()
-        {
+        hostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
                 AcceptThread acceptThread = new AcceptThread();
+                acceptThread.start();
             }
         });
 
 
-        searchButton.setOnClickListener(new View.OnClickListener()
-        {
+        searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                if(bluetoothAdapter != null)
-                {
+            public void onClick(View v) {
+                if (bluetoothAdapter != null) {
                     // make a toast alert
                     CharSequence searchingMessage = "Searching for a nearby battle!";
                     Toast alertSearching = makeText(context, searchingMessage, LENGTH_SHORT);
@@ -154,10 +146,8 @@ public class MainActivity extends ActionBarActivity {
 
                     // look for devices
                     bluetoothAdapter.startDiscovery();
-//                    updateBluetoothDevices(devicesAdapter);
-                }
-                else
-                {
+                    updateBluetoothDevices(devicesAdapter);
+                } else {
                     CharSequence cannotSearch = "No bluetooth means you cannot search :(";
                     Toast alertSearching = makeText(context, cannotSearch, LENGTH_SHORT);
                     alertSearching.show();
@@ -165,11 +155,9 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        xButton.setOnClickListener(new View.OnClickListener()
-        {
+        xButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 spin.clearAnimation();
                 spin.setVisibility(View.INVISIBLE);
                 xButton.setVisibility(View.INVISIBLE);
@@ -177,14 +165,13 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        connectButton.setOnClickListener(new View.OnClickListener()
-        {
+        connectButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 String macAddress = deviceSpinner.getSelectedItem().toString().split("\n")[1];
                 BluetoothDevice host = bluetoothAdapter.getRemoteDevice(macAddress);
                 ConnectThread connectThread = new ConnectThread(host);
+                connectThread.start();
             }
         });
     }
@@ -202,7 +189,7 @@ public class MainActivity extends ActionBarActivity {
         BluetoothDevice device = bluetoothAdapter.
                 getRemoteDevice(macAddress);
         Method m = device.getClass().getMethod("createRfcommSocket",
-                new Class[] { int.class });
+                new Class[]{int.class});
         sock = (BluetoothSocket) m.invoke(device, Integer.valueOf(1));
         sock.connect();
         in = sock.getInputStream();
@@ -228,9 +215,8 @@ public class MainActivity extends ActionBarActivity {
     /**
      * Updates the list of available bluetooth devices
      */
-    public void updateBluetoothDevices(ArrayAdapter arrayAdapter)
-    {
-        if(arrayAdapter != null) {
+    public void updateBluetoothDevices(ArrayAdapter arrayAdapter) {
+        if (arrayAdapter != null) {
             arrayAdapter.clear();
             Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
             // If there are paired devices
@@ -239,7 +225,7 @@ public class MainActivity extends ActionBarActivity {
                 for (BluetoothDevice device : pairedDevices) {
                     System.out.println(device.getName());
                     // Add the name and address to an array adapter to show in a ListView
-                    if(device.getName().endsWith(NAME_SUFFIX)) {
+                    if (device.getName().endsWith(NAME_SUFFIX)) {
                         devicesAdapter.add(device.getName() + "\n" + device.getAddress());
                     }
                 }
@@ -250,45 +236,38 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * Set up the bluetooth for the device.
-     *  - Check if bluetooth is supported
-     *  - Enable bluetooth if it is not
-     *  - Read any already paired devices
-     *  - Register the BroadcastReceiver
+     * - Check if bluetooth is supported
+     * - Enable bluetooth if it is not
+     * - Read any already paired devices
+     * - Register the BroadcastReceiver
      */
-    public void setBluetooth()
-    {
+    public void setBluetooth() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         // set the name if it is not already set to identify app use
-        if(!(bluetoothAdapter.getName().endsWith(NAME_SUFFIX)))
-        {
+        if (!(bluetoothAdapter.getName().endsWith(NAME_SUFFIX))) {
             bluetoothAdapter.setName(bluetoothAdapter.getName().concat(NAME_SUFFIX));
         }
 
-        if (bluetoothAdapter == null)
-        {
+        if (bluetoothAdapter == null) {
             CharSequence noBluetoothMessage = "The device doesn't not support bluetooth. Sorry!";
             Toast alertNoBluetooth = makeText(context, noBluetoothMessage, LENGTH_SHORT);
             alertNoBluetooth.show();
-        }
-        else {
+        } else {
             devicesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
             // enable bluetooth if it is not
-            if (!bluetoothAdapter.isEnabled())
-            {
+            if (!bluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             }
             devicesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
             Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
             // If there are paired devices
-            if (pairedDevices.size() > 0)
-            {
+            if (pairedDevices.size() > 0) {
                 // Loop through paired devices
-                for (BluetoothDevice device : pairedDevices)
-                {
+                for (BluetoothDevice device : pairedDevices) {
                     // Add the name and address to an array adapter to show in a ListView
-                    if(device.getName().endsWith(NAME_SUFFIX)) {
+                    if (device.getName().endsWith(NAME_SUFFIX)) {
                         devicesAdapter.add(device.getName() + "\n" + device.getAddress());
                     }
                 }
