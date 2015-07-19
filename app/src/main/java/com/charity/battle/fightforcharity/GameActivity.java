@@ -1,6 +1,7 @@
 package com.charity.battle.fightforcharity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -26,6 +27,9 @@ public class GameActivity extends ActionBarActivity {
     private ImageView paper;
     private ImageView axe;
     private TextView playAgain;
+    private TextView win;
+    private TextView tie;
+    private TextView lose;
     private Button accept;
     private Button decline;
     private Context context;
@@ -44,6 +48,9 @@ public class GameActivity extends ActionBarActivity {
         paper = (ImageView) findViewById(R.id.paper);
         axe = (ImageView) findViewById(R.id.Axe);
         playAgain = (TextView) findViewById(R.id.play_again);
+        win = (TextView) findViewById(R.id.win);
+        tie = (TextView) findViewById(R.id.tie);
+        lose = (TextView) findViewById(R.id.lose);
         accept = (Button) findViewById(R.id.accept);
         decline = (Button) findViewById(R.id.decline);
         move = 0;
@@ -54,7 +61,10 @@ public class GameActivity extends ActionBarActivity {
             public void onClick(View v)
             {
                 move = 1;
+                //send move to other device
                 result = rockPaperAxe(move, otherMove);
+                //call paypal transactions here
+                replay(result);
             }
         });
         paper.setOnClickListener(new View.OnClickListener()
@@ -63,7 +73,10 @@ public class GameActivity extends ActionBarActivity {
             public void onClick(View v)
             {
                 move = 2;
+                //send move to other device
                 result = rockPaperAxe(move, otherMove);
+                //call paypal transaction here
+                replay(result);
             }
         });
         axe.setOnClickListener(new View.OnClickListener()
@@ -72,7 +85,10 @@ public class GameActivity extends ActionBarActivity {
             public void onClick(View v)
             {
                 move = 3;
+                //send move to other device
                 result = rockPaperAxe(move, otherMove);
+                //call paypal transaction here
+                replay(result);
             }
         });
     }
@@ -93,6 +109,35 @@ public class GameActivity extends ActionBarActivity {
         return 0;
     }
 
+    public void replay(int result) {
+
+        rock.setVisibility(View.INVISIBLE);
+        paper.setVisibility(View.INVISIBLE);
+        axe.setVisibility(View.INVISIBLE);
+        playAgain.setVisibility(View.VISIBLE);
+        accept.setVisibility(View.VISIBLE);
+        decline.setVisibility(View.VISIBLE);
+
+        if (result == 1) { win.setVisibility(View.VISIBLE); }
+        else if (result == 0) { tie.setVisibility(View.VISIBLE); }
+        else{ lose.setVisibility(View.VISIBLE); }
+
+        accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //recreate
+            }
+        });
+
+        decline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GameActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

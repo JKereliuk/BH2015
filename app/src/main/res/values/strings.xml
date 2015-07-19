@@ -8,6 +8,8 @@
     <string name="accept">Hell Yes!</string>
     <string name="decline">No Way!</string>
     <string name="playa_again">Play Again?</string>
-
+    <string name="win">Congrats your won!</string>
+    <string name="tie">Tie Game!</string>
+    <string name="lose">Sorry you lost :(</string>
     <string name="hello_world">Hello world!</string>
 </resources>
