@@ -23,15 +23,15 @@ import static android.widget.Toast.makeText;
 
 public class GameActivity extends ActionBarActivity {
 
-    private ImageView rock;
-    private ImageView paper;
-    private ImageView axe;
-    private TextView playAgain;
-    private TextView win;
-    private TextView tie;
-    private TextView lose;
-    private Button accept;
-    private Button decline;
+    private ImageView rockImg;
+    private ImageView paperImg;
+    private ImageView axeImg;
+    private TextView playAgainView;
+    private TextView winView;
+    private TextView tieView;
+    private TextView loseView;
+    private Button acceptButton;
+    private Button declineButton;
     private Context context;
     private int move;
     private int result;
@@ -44,18 +44,18 @@ public class GameActivity extends ActionBarActivity {
         context = getApplicationContext();
 
         // set view variables
-        rock = (ImageView) findViewById(R.id.rock);
-        paper = (ImageView) findViewById(R.id.paper);
-        axe = (ImageView) findViewById(R.id.Axe);
-        playAgain = (TextView) findViewById(R.id.play_again);
-        win = (TextView) findViewById(R.id.win);
-        tie = (TextView) findViewById(R.id.tie);
-        lose = (TextView) findViewById(R.id.lose);
-        accept = (Button) findViewById(R.id.accept);
-        decline = (Button) findViewById(R.id.decline);
+        rockImg = (ImageView) findViewById(R.id.rock);
+        paperImg = (ImageView) findViewById(R.id.paper);
+        axeImg = (ImageView) findViewById(R.id.Axe);
+        playAgainView = (TextView) findViewById(R.id.play_again);
+        winView = (TextView) findViewById(R.id.win);
+        tieView = (TextView) findViewById(R.id.tie);
+        loseView = (TextView) findViewById(R.id.lose);
+        acceptButton = (Button) findViewById(R.id.accept);
+        declineButton = (Button) findViewById(R.id.decline);
         move = 0;
 
-        rock.setOnClickListener(new View.OnClickListener()
+        rockImg.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -67,7 +67,7 @@ public class GameActivity extends ActionBarActivity {
                 replay(result);
             }
         });
-        paper.setOnClickListener(new View.OnClickListener()
+        paperImg.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -79,7 +79,7 @@ public class GameActivity extends ActionBarActivity {
                 replay(result);
             }
         });
-        axe.setOnClickListener(new View.OnClickListener()
+        axeImg.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -111,25 +111,25 @@ public class GameActivity extends ActionBarActivity {
 
     public void replay(int result) {
 
-        rock.setVisibility(View.INVISIBLE);
-        paper.setVisibility(View.INVISIBLE);
-        axe.setVisibility(View.INVISIBLE);
-        playAgain.setVisibility(View.VISIBLE);
-        accept.setVisibility(View.VISIBLE);
-        decline.setVisibility(View.VISIBLE);
+        rockImg.setVisibility(View.INVISIBLE);
+        paperImg.setVisibility(View.INVISIBLE);
+        axeImg.setVisibility(View.INVISIBLE);
+        playAgainView.setVisibility(View.VISIBLE);
+        acceptButton.setVisibility(View.VISIBLE);
+        declineButton.setVisibility(View.VISIBLE);
 
-        if (result == 1) { win.setVisibility(View.VISIBLE); }
-        else if (result == 0) { tie.setVisibility(View.VISIBLE); }
-        else{ lose.setVisibility(View.VISIBLE); }
+        if (result == 1) { winView.setVisibility(View.VISIBLE); }
+        else if (result == 0) { tieView.setVisibility(View.VISIBLE); }
+        else{ loseView.setVisibility(View.VISIBLE); }
 
-        accept.setOnClickListener(new View.OnClickListener() {
+        acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //recreate
             }
         });
 
-        decline.setOnClickListener(new View.OnClickListener() {
+        declineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(GameActivity.this, MainActivity.class);
