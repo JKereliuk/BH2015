@@ -5,15 +5,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.content.Intent;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -99,7 +97,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     // For testing puspose username, password is checked with sample data
                     // username = test
                     // password = test
-                    if (username.equals("test") && password.equals("test")) {
+                    if ((username.equals("test") && password.equals("test")) | ((username.equals("pest")) && password.equals("pest"))) {
 
                         // Creating user login session
                         // For testing i am stroing name, email as follow

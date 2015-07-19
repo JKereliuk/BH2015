@@ -6,6 +6,8 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,6 +15,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -74,6 +77,23 @@ public class MainActivity extends ActionBarActivity {
         mainText = (TextView) findViewById(R.id.mainText);
         brainTreeLogo = (ImageView) findViewById(R.id.brainTree);
         paypalButton = (Button) findViewById(R.id.config_paypal);
+
+        AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+        Button audio = (Button)findViewById(R.id.audio);
+        audio.setSoundEffectsEnabled(false);
+        final MediaPlayer mp1 = MediaPlayer.create(getBaseContext(), R.raw.pokemonmusic);
+
+        audio.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    mp1.seekTo(0);
+                    mp1.start();
+                }
+                return true;
+            }
+        });
 
         usermanager = new UserManager(getApplicationContext());
 
@@ -179,6 +199,18 @@ public class MainActivity extends ActionBarActivity {
         super.onDestroy();
     }
 
+    public void onFuturePaymentPurchasePressed(View pressed) {
+        // Get the Client Metadata ID from the SDK
+        String metadataId = PayPalConfiguration.getClientMetadataId(this);
+
+        Log.i("FuturePaymentExample", "Client Metadata ID: " + metadataId);
+
+        // TODO: Send metadataId and transaction details to your server for processing with
+        // PayPal...
+        Toast.makeText(
+                getApplicationContext(), "Client Metadata Id received from SDK", Toast.LENGTH_LONG)
+                .show();
+    }
 
 
     @Override

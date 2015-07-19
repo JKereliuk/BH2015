@@ -17,14 +17,40 @@
         android:layout_margin="10dp"
         android:id="@+id/linearLayout">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_margin="10dp"
+        android:id="@+id/linearLayout">
+
         <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Configure Paypal"
+            android:text="Paypal"
             android:id="@+id/config_paypal"
             android:onClick="onFuturePaymentPressed"
             android:layout_gravity="center_horizontal" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I Lost"
+            android:id="@+id/lost_game"
+            android:onClick="onFuturePaymentPurchasePressed"
+            android:layout_gravity="center_horizontal" />
+
+        <Button
+            style="?android:attr/imageButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#000000"
+            android:id="@+id/audio"
+            android:layout_gravity="center_horizontal" />
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/brainTree"
