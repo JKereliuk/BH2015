@@ -125,7 +125,8 @@ public class GameActivity extends ActionBarActivity {
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //recreate
+                Intent intent = new Intent(GameActivity.this, GameActivity.class);
+                startActivity(intent);
             }
         });
 
