@@ -52,6 +52,10 @@ public class MainActivity extends ActionBarActivity {
         }
     };
 
+    private Context context;
+
+    /* Views */
+
     private Button searchButton;
 
     private Button connectButton;
@@ -66,7 +70,7 @@ public class MainActivity extends ActionBarActivity {
 
     private Spinner deviceSpinner;
 
-    private Context context;
+    /* Bluetooth */
 
     private BluetoothAdapter bluetoothAdapter;
 
@@ -106,19 +110,24 @@ public class MainActivity extends ActionBarActivity {
             {
                 if(bluetoothAdapter != null)
                 {
-                    // Make a toast alert
+                    // make a toast alert
                     CharSequence searchingMessage = "Searching for a nearby battle!";
                     Toast alertSearching = makeText(context, searchingMessage, LENGTH_SHORT);
                     alertSearching.show();
+
+                    //hide the search button
                     searchButton.setVisibility(View.INVISIBLE);
 
+                    // set animation of spinner
                     Animation rotation = AnimationUtils.loadAnimation(context, R.anim.rotate);
                     rotation.setRepeatCount(Animation.INFINITE);
                     spin.startAnimation(rotation);
                     spin.setVisibility(View.VISIBLE);
 
+                    // show the cancel button
                     xButton.setVisibility(View.VISIBLE);
 
+                    // look for devices
                     bluetoothAdapter.startDiscovery();
                     updateBluetoothDevices(devicesAdapter);
                 }
@@ -159,25 +168,11 @@ public class MainActivity extends ActionBarActivity {
                 }
             }
         });
-
-        deviceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
-            {
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView)
-            {
-            }
-
-        });
     }
 
     /**
      * Sends a request to pair with the selected device
-     * 
+     *
      * @param macAddress the mac address of the device to connect to
      * @throws Exception
      */
