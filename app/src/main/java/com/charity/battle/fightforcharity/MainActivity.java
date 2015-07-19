@@ -52,9 +52,11 @@ public class MainActivity extends ActionBarActivity {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // Add the name and address to an array adapter to show in a ListView
                 System.out.println(device.getName());
-                if (device.getName().endsWith(NAME_SUFFIX)) {
-                    devicesAdapter.add(device.getName() + "\n" + device.getAddress());
-                    deviceSpinner.setAdapter(devicesAdapter);
+                if(device.getName() != null) {
+                    if (device.getName().endsWith(NAME_SUFFIX)) {
+                        devicesAdapter.add(device.getName() + "\n" + device.getAddress());
+                        deviceSpinner.setAdapter(devicesAdapter);
+                    }
                 }
             }
         }
@@ -134,7 +136,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v)
             {
-                connectedThread.write("HEY!".getBytes());
+//                connectedThread.write("HEY!".getBytes());
             }
         });
 
