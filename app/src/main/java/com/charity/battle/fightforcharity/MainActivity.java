@@ -175,6 +175,12 @@ public class MainActivity extends ActionBarActivity {
         });
     }
 
+    /**
+     * Sends a request to pair with the selected device
+     * 
+     * @param macAddress the mac address of the device to connect to
+     * @throws Exception
+     */
     public void connectToDevice(String macAddress) throws Exception {
         if (connected) {
             return;
