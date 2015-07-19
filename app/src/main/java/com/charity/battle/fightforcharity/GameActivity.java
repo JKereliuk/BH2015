@@ -54,6 +54,7 @@ public class GameActivity extends ActionBarActivity {
         acceptButton = (Button) findViewById(R.id.accept);
         declineButton = (Button) findViewById(R.id.decline);
         move = 0;
+        otherMove = 1; // for testing
 
         rockImg.setOnClickListener(new View.OnClickListener()
         {
